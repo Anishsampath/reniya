@@ -145,6 +145,7 @@ const styles = `
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 async function callClaude(systemPrompt, userMessage) {
+  console.log("Gemini key:", import.meta.env.VITE_GEMINI_KEY?.slice(0, 8));
   try {
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_KEY}`,
