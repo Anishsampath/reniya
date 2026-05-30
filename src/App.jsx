@@ -146,24 +146,20 @@ const styles = `
 
 async function callClaude(systemPrompt, userMessage) {
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": import.meta.env.VITE_ANTHROPIC_KEY,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-5",
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{ role: "user", content: userMessage }],
-      }),
-    });
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: systemPrompt + "\n\n" + userMessage }] }],
+          generationConfig: { temperature: 0.9, maxOutputTokens: 1000 }
+        }),
+      }
+    );
     const data = await res.json();
-    console.log("API response:", JSON.stringify(data));
-    return data.content?.[0]?.text || "";
+    console.log("Gemini response:", JSON.stringify(data));
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
   } catch (err) {
     console.error("API error:", err);
     return "";
